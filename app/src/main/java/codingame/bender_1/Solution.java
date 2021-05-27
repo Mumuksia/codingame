@@ -10,6 +10,9 @@ import java.math.*;
  **/
 class Solution {
 
+    private static boolean teleported = false;
+    private static int tx = 0, ty = 0, tx2 =0, ty2 =0;
+
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
         int L = in.nextInt();
@@ -36,12 +39,13 @@ class Solution {
 
     public static String execute(char[][] map, int x, int y, int L, int C){
         int[][] visited = new int[L][C];
+        setTeleports(map, L, C);
         return step(map, x, y, visited, false, false, 'S', new StringBuilder());
     }
 
-    //TODO breaker, Multiple Loops, Teleport
+    //TODO Multiple Loops, perhaps Found the issue. If I was on a direction, like “N”, but there was an obstacle in front of me, I ignored the direction, and turned the wrong way.
     public static String step(char[][] map, int x, int y, int[][] visited, boolean beer, boolean inverted, char modifier, StringBuilder path){
-        if (visited[x][y] == (10 + getBeerModifier(beer) + getInvModifier(inverted) + getIntModifier(modifier))){
+        if (path.toString().length() > 1000){
             return "LOOP";
         }
         visited[x][y] = (10 + getBeerModifier(beer) + getInvModifier(inverted) + getIntModifier(modifier));
@@ -56,9 +60,15 @@ class Solution {
             case ' ':
             case '@':
                 break;
-            case 'X': map[x][y] = ' ';
+            case 'T': if (!teleported) {
+                teleported = true;
+                return step(map, getTeleportedX(x), getTeleportedY(y), visited, beer, inverted, modifier, path);
+            }
+            case 'X': map[x][y] = ' '; break;
             default: modifier = map[x][y];
         }
+
+        teleported = false;
 
         char nextCell = getNextCell(x, y, modifier, map);
 
@@ -75,7 +85,6 @@ class Solution {
         }
     }
 
-    //add teleport points
     private static char getNextCell(int x, int y, char modifier, char[][] map){
         switch (modifier){
             case ('W'): return map[x][y-1];
@@ -104,13 +113,13 @@ class Solution {
     }
 
     private static char getInvertedObstacleModifier(char[][] map, int x, int y, boolean beer){
-        if (map[x][y-1] != '#' || (map[x][y-1] == 'X' && beer))
+        if (map[x][y-1] != '#' && (map[x][y-1] != 'X' || beer))
             return 'W';
-        if (map[x-1][y] != '#' || (map[x-1][y] == 'X' && beer))
+        if (map[x-1][y] != '#' && (map[x-1][y] != 'X' || beer))
             return 'N';
-        if (map[x][y+1] != '#' || (map[x][y+1] == 'X' && beer))
+        if (map[x][y+1] != '#' && (map[x][y+1] != 'X' || beer))
             return 'E';
-        if (map[x+1][y] != '#' || (map[x+1][y] == 'X' && beer))
+        if (map[x+1][y] != '#' && (map[x+1][y] != 'X' || beer))
             return 'S';
         return ' ';
 
@@ -153,7 +162,7 @@ class Solution {
         return inverted?1000:0;
     }
 
-    private static void printout(String sb){
+    public static void printout(String sb){
         String[] lines = sb.split("Z");
         for (String s : lines)
             System.out.println(transformModifier(s));
@@ -167,5 +176,34 @@ class Solution {
             case ("N"): return "NORTH";
             default: return "LOOP";
         }
+    }
+
+    private static void setTeleports(char[][] map, int L, int C){
+        boolean firstTeleport = true;
+        for (int i=0; i<L; i++)
+            for (int j=0; j<C; j++){
+                if (map[i][j] == 'T'){
+                    if (firstTeleport){
+                        tx = i;
+                        ty = j;
+                        firstTeleport = false;
+                    } else {
+                        tx2 = i;
+                        ty2 = j;
+                    }
+                }
+            }
+    }
+
+    private static int getTeleportedX(int x){
+        if (x != tx)
+            return tx;
+        return tx2;
+    }
+
+    private static int getTeleportedY(int y){
+        if (y != ty)
+            return ty;
+        return ty2;
     }
 }
