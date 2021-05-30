@@ -43,7 +43,6 @@ class Solution {
         return step(map, x, y, visited, false, false, 'S', new StringBuilder());
     }
 
-    //TODO Multiple Loops, perhaps Found the issue. If I was on a direction, like “N”, but there was an obstacle in front of me, I ignored the direction, and turned the wrong way.
     public static String step(char[][] map, int x, int y, int[][] visited, boolean beer, boolean inverted, char modifier, StringBuilder path){
         if (path.toString().length() > 1000){
             return "LOOP";
