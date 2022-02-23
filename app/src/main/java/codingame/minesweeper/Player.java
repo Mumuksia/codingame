@@ -1,6 +1,7 @@
 package codingame.minesweeper;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -10,29 +11,31 @@ import java.util.Scanner;
  **/
 public class Player {
 
+    static Map m = new Map();
+
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
 
         boolean firstTime = true;
-        Map.init();
+        m.init();
 
         while (true) {
-            Map.read(in);
+            m.read(in);
 
             if (firstTime) {
                 System.out.println("20 7");
                 firstTime = false;
             } else {
-                Map.findMines();
-                Map.findMoves();
+                m.findMines();
+                m.findMoves();
 
-                String result = Map.moves.get(0).col + " " + Map.moves.get(0).row;
+                String result = m.moves.get(0).col + " " + m.moves.get(0).row;
 
                 for (int r = 0; r < 16; r++) {
                     for (int c = 0; c < 30; c++) {
-                        if (Map.cells[r][c].isMine) {
-                            result = result + " " + Map.cells[r][c].pos.col + " " + Map.cells[r][c].pos.row;
+                        if (m.cells[r][c].isMine) {
+                            result = result + " " + m.cells[r][c].pos.col + " " + m.cells[r][c].pos.row;
                         }
                     }
                 }
@@ -40,15 +43,6 @@ public class Player {
                 System.out.println(result);
             }
         }
-    }
-
-    public void sweeperStep(char[][] grid) {
-
-        System.out.println("20 7");
-    }
-
-    public static class Cell {
-
     }
 }
 
@@ -122,10 +116,10 @@ class Cell {
 }
 
 class Map {
-    public static Cell[][] cells = new Cell[16][30];
-    public static ArrayList<Position> moves = new ArrayList<>();
+    public Cell[][] cells = new Cell[16][30];
+    public List<Position> moves = new ArrayList<>();
 
-    public static final void init() {
+    public final void init() {
         for (int r = 0; r < 16; r++) {
             for (int c = 0; c < 30; c++) {
                 cells[r][c] = new Cell();
@@ -134,7 +128,7 @@ class Map {
         }
     }
 
-    public static final void read(Scanner in) {
+    public final void read(Scanner in) {
         for (int r = 0; r < 16; r++) {
             for (int c = 0; c < 30; c++) {
                 cells[r][c].isMove = false;
@@ -153,7 +147,7 @@ class Map {
         }
     }
 
-    public static final int getNsafe(int row, int col) {
+    public final int getNsafe(int row, int col) {
         int n = 0;
         for (Position p : cells[row][col].neighbors) {
             if (cells[p.row][p.col].isSafe) {
@@ -163,7 +157,7 @@ class Map {
         return n;
     }
 
-    public static final int getNmines(int row, int col) {
+    public final int getNmines(int row, int col) {
         int n = 0;
         for (Position p : cells[row][col].neighbors) {
             if (cells[p.row][p.col].isMine) {
@@ -173,7 +167,7 @@ class Map {
         return n;
     }
 
-    public static boolean isMineAllowedHere(int rowMine, int colMine, int row, int col) {
+    public boolean isMineAllowedHere(int rowMine, int colMine, int row, int col) {
         boolean result = true;
 
         Cell[][] cel = new Cell[16][30];
@@ -219,20 +213,17 @@ class Map {
     }
 
 
-    public static void findMines() {
+    public void findMines() {
         for (int r = 0; r < 16; r++) {
             for (int c = 0; c < 30; c++) {
 
                 if (cells[r][c].isSafe && cells[r][c].nMines > 0) {
                     int nSafe = getNsafe(r, c);
-                    int nDiscoveredMines = getNmines(r, c);
-
-                    // cerr << r << " " << c << " " << nSafe + nDiscoveredMines + cells[r][c].nMines << "      " << nSafe << " " << nDiscoveredMines << " " << cells[r][c].nMines << endl;
 
                     if (nSafe + cells[r][c].nMines == cells[r][c].neighbors.size()) {
                         // mine found, all unsafe neighbours are mines
                         for (Position p : cells[r][c].neighbors) {
-                            if (cells[p.row][p.col].isSafe == false) {
+                            if (!cells[p.row][p.col].isSafe) {
                                 cells[p.row][p.col].isMine = true;
                             }
                         }
@@ -244,7 +235,7 @@ class Map {
     }
 
 
-    public static int minesLeftToDiscover() {
+    public int minesLeftToDiscover() {
         int result = 99;
         for (int r = 0; r < 16; r++) {
             for (int c = 0; c < 30; c++) {
@@ -256,7 +247,7 @@ class Map {
         return result;
     }
 
-    public static int unsafeCells() {
+    public int unsafeCells() {
         int result = 0;
         for (int r = 0; r < 16; r++) {
             for (int c = 0; c < 30; c++) {
@@ -268,7 +259,7 @@ class Map {
         return result;
     }
 
-    public static float setProbabilities() {
+    public float setProbabilities() {
 
 
         int minesLeft = minesLeftToDiscover();
@@ -320,10 +311,10 @@ class Map {
         return p0;
     }
 
-    public static void findMoves() {
+    public void findMoves() {
         System.err.println(" FIND MOVES");
 
-        moves.clear();
+        moves = new ArrayList<>();
         for (int r = 0; r < 16; r++) {
             for (int c = 0; c < 30; c++) {
 
@@ -337,6 +328,7 @@ class Map {
                             }
                         }
                     }
+
                 }
             }
         }

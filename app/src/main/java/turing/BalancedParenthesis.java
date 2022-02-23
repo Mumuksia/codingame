@@ -9,21 +9,21 @@ public class BalancedParenthesis {
         char[] sc = s.toCharArray();
         Stack<Character> stc = new Stack<>();
 
-        for (int i=0;i<sc.length;i++){
-            if (sc[i] == '(' || sc[i] == '[' || sc[i] == '{'){
-                stc.push(sc[i]);
+        for (char value : sc) {
+            if (value == '(' || value == '[' || value == '{') {
+                stc.push(value);
             } else {
-                if (stc.isEmpty()){
+                if (stc.isEmpty()) {
                     return false;
                 }
                 Character c = stc.pop();
-                if (sc[i] == ')' && c !='('){
+                if (value == ')' && c != '(') {
                     return false;
                 }
-                if (sc[i] == ']' && c !='['){
+                if (value == ']' && c != '[') {
                     return false;
                 }
-                if (sc[i] == '}' && c !='{'){
+                if (value == '}' && c != '{') {
                     return false;
                 }
             }
