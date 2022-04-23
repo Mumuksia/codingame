@@ -16,9 +16,14 @@ public class Player {
         int baseX = in.nextInt(); // The corner of the map representing your base
         int baseY = in.nextInt();
         int heroesPerPlayer = in.nextInt(); // Always 3
-        int initialX = Math.abs(baseX - 3810);
-        int initialY = Math.abs(baseY - 3500);
+        int initialX1 = Math.abs(baseX - 3810);
+        int initialY1 = Math.abs(baseY - 3500);
+        int initialX2 = Math.abs(baseX - 3810);
+        int initialY2 = Math.abs(baseY - 3500);
+        int initialX3 = Math.abs(baseX - 3810);
+        int initialY3 = Math.abs(baseY - 3500);
         //heroes are in order 0 1 2 3 4 5
+
 
         // game loop
         while (true) {
@@ -58,23 +63,22 @@ public class Player {
             }
 
             heroes = heroes.stream().sorted(Comparator.comparingInt(a -> a.id)).collect(Collectors.toList());
+            heroes.forEach(h -> h.setToDefault(baseX, baseY));
+            List<Integer> usedHeroes = new ArrayList<>();
+            for (Monster m: monsters) {
 
-            for (Hero h: heroes) {
-                Map<Monster, Integer> distances = new HashMap<>();
-                Map<Hero, Monster> allocatedHeroes = new HashMap<>();
+                Map<Monster, Hero> allocatedHeroes = new HashMap<>();
                 int minDistance = 10000000;
-                for (Monster m: monsters){
-                    if (minDistance > h.getSquaredDistanceToMonster(m)){
-                        allocatedHeroes.put(h, m);
+                for (Hero h: heroes){
+                    if (!usedHeroes.contains(h.id) && minDistance > h.getSquaredDistanceToMonster(m)){
+                        allocatedHeroes.put(m, h);
                         minDistance = h.getSquaredDistanceToMonster(m);
                     }
                 }
+                Hero tempHero = allocatedHeroes.get(m);
                 if (minDistance < 9000000){
-                    monsters.remove(allocatedHeroes.get(h));
-                    h.calculatePathToInterceptMonster(allocatedHeroes.get(h));
-                } else {
-                    h.vx = initialX;
-                    h.vy = initialY;
+                    usedHeroes.add(tempHero.id);
+                    allocatedHeroes.get(m).calculatePathToInterceptMonster(m);
                 }
             }
 
@@ -89,7 +93,6 @@ class Hero{
     int x;
     int y;
     int id;
-    public String move = "WAIT";
     int vx;
     int vy;
 
@@ -114,6 +117,21 @@ class Hero{
             System.out.println("WAIT");
         } else {
             System.out.println("MOVE " + vx + " " + vy);
+        }
+    }
+
+    public void setToDefault(int baseX, int baseY){
+        if (id == 0 || id == 3){
+            vx = Math.abs(baseX - 6830);
+            vy = Math.abs(baseY - 1650);
+        }
+        if (id == 1 || id == 4){
+            vx = Math.abs(baseX - 5300);
+            vy = Math.abs(baseY - 4200);
+        }
+        if (id == 2 || id == 5){
+            vx = Math.abs(baseX - 1830);
+            vy = Math.abs(baseY - 6600);
         }
     }
 }
