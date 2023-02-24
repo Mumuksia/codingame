@@ -25,7 +25,9 @@ dependencies {
 
     // This dependency is used by the application.
     implementation("com.google.guava:guava:29.0-jre")
+    implementation(files("libs/EUSignJava.jar"))
     implementation(kotlin("stdlib-jdk8"))
+    implementation("com.googlecode.json-simple:json-simple:1.1")
 }
 
 application {
@@ -34,9 +36,9 @@ application {
 }
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
-    jvmTarget = "1.17"
+    jvmTarget = "17"
 }
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.17"
+    jvmTarget = "17"
 }
