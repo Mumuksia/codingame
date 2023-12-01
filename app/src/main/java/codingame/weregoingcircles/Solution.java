@@ -55,6 +55,7 @@ class Solution {
     }
 
     private static void graphStep(int x, int y, List<CPair> route, char direction){
+        /*
         if (x<0 || y<0 || x>=h || y>=w || partOfNoLoop[x][y]){
             partOfNoLoop = addCurrentToStateLoop(route, partOfNoLoop);
             return;
@@ -96,7 +97,7 @@ class Solution {
             }
             default -> {
             }
-        }
+        } */
     }
 
     private static boolean[][] addCurrentToStateLoop(List<CPair> route, boolean[][] currentState)
