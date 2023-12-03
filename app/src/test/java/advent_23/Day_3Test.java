@@ -32,6 +32,6 @@ public class Day_3Test {
     @Test
     public void engine2_result() throws IOException, URISyntaxException {
         String input = "/advent_23/day3_1.txt";
-        assertEquals(467835, day_3.engine_2(input));
+        //assertEquals(467835, day_3.engine_2(input)); hiding answer
     }
 }
