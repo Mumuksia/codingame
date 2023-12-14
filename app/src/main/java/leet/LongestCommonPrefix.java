@@ -1,19 +1,23 @@
 package leet;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class LongestCommonPrefix {
 
     public String longestCommonPrefix(String[] strs) {
         StringBuilder sb = new StringBuilder();
-        for (int j = 0; j< strs[0].length(); j++){
-            for (int i = 1; i< strs.length; i++){
-                if(j==strs[i].length()){
-                    return sb.toString();
-                }
-                if (strs[0].toCharArray()[j] != strs[i].toCharArray()[j]){
+
+        String smallest = Arrays.stream(strs).sorted((a, b) -> a.length() - b.length()).collect(Collectors.toList()).get(0);
+        for (int i = 0; i< smallest.length(); i++){
+            char c = smallest.charAt(i);
+            for (String s : strs){
+                if (c != s.charAt(i)){
                     return sb.toString();
                 }
             }
-            sb.append(strs[0].toCharArray()[j]);
+            sb.append(c);
         }
         return sb.toString();
     }
