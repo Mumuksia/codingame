@@ -1,5 +1,7 @@
 package leet;
 
+import java.util.Arrays;
+
 public class IsSubsequence {
     public boolean isSubsequence(String s, String t) {
         char[] sc = s.toCharArray();
@@ -19,5 +21,13 @@ public class IsSubsequence {
             }
         }
         return true;
+    }
+
+    public boolean isAnagram(String s, String t) {
+        char[] sa = s.toCharArray();
+        Arrays.sort(sa);
+        char[] ta = t.toCharArray();
+        Arrays.sort(ta);
+        return new String(sa).equals(new String(ta));
     }
 }
